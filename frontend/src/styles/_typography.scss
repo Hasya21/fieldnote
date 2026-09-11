@@ -1,0 +1,27 @@
+@use 'variables' as v;
+body {
+  font-family: v.$font;
+  color: v.$ink;
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+h1 {
+  font-size: clamp(24px, 2.3vw, 32px);
+  font-weight: 550;
+  letter-spacing: -1px;
+  line-height: 1.25;
+}
+h2 {
+  font-size: 14px;
+  font-weight: 600;
+}
+button,
+input,
+select {
+  font: inherit;
+}

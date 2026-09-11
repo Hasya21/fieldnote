@@ -1,0 +1,96 @@
+<div class="preset-bar" aria-label="Sample date presets">
+  <span>Period</span>
+  @for (presetOption of presets; track presetOption.label) {
+    <button
+      type="button"
+      [attr.aria-pressed]="
+        store.filters().startDate === presetOption.startDate &&
+        store.filters().endDate === presetOption.endDate
+      "
+      (click)="preset(presetOption)"
+    >
+      {{ presetOption.label }}
+    </button>
+  }
+</div>
+<form class="filters" [formGroup]="form" aria-label="Analytics filters">
+  <label
+    >From<input
+      type="date"
+      formControlName="startDate"
+      min="2024-01-01"
+      max="2025-12-31"
+      [attr.aria-invalid]="form.hasError('dateRange')"
+      aria-describedby="date-help"
+  /></label>
+  <label
+    >To<input
+      type="date"
+      formControlName="endDate"
+      min="2024-01-01"
+      max="2025-12-31"
+      [attr.aria-invalid]="form.hasError('dateRange')"
+      aria-describedby="date-help"
+  /></label>
+  <label
+    >Category<select formControlName="category" aria-label="Category">
+      <option value="">All categories</option>
+      @for (item of options()?.categories ?? []; track item) {
+        <option [value]="item">{{ item }}</option>
+      }
+    </select></label
+  >
+  <label
+    >Region<select formControlName="region" aria-label="Region">
+      <option value="">All regions</option>
+      @for (item of options()?.regions ?? []; track item) {
+        <option [value]="item">{{ item }}</option>
+      }
+    </select></label
+  >
+  <label
+    >Retailer<select formControlName="retailer" aria-label="Retailer">
+      <option value="">All retailers</option>
+      @for (item of options()?.retailers ?? []; track item) {
+        <option [value]="item">{{ item }}</option>
+      }
+    </select></label
+  >
+  <label
+    >Segment<select formControlName="customerSegment" aria-label="Segment">
+      <option value="">All segments</option>
+      @for (item of options()?.segments ?? []; track item) {
+        <option [value]="item">{{ item }}</option>
+      }
+    </select></label
+  >
+</form>
+<div class="filter-footer">
+  <p id="date-help" [class.invalid]="form.invalid">
+    {{
+      form.invalid
+        ? 'Choose a valid date range within 2024–2025. Filters have not been
+    applied.'
+        : 'Fictional data · Jan 2024–Dec 2025 · Filters apply automatically'
+    }}
+  </p>
+  <button type="button" (click)="reset()" aria-label="Reset all filters">Reset filters</button>
+</div>
+@if (chips().length) {
+  <div class="chips" aria-label="Active filters">
+    <span>{{ chips().length }} active {{ chips().length === 1 ? 'filter' : 'filters' }}</span>
+    @for (chip of chips(); track chip.key) {
+      <button type="button" (click)="remove(chip.key)" [attr.aria-label]="'Remove ' + chip.label">
+        {{ chip.label }} <span aria-hidden="true">×</span>
+      </button>
+    }
+  </div>
+}
+@if (store.notice()) {
+  <p class="notice" role="status">{{ store.notice() }}</p>
+}
+@if (error()) {
+  <p class="error" role="alert">
+    {{ error() }} <button type="button" (click)="loadOptions()">Retry filter options</button>
+  </p>
+}

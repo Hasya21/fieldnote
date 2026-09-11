@@ -1,0 +1,96 @@
+<section class="page-heading">
+  <div>
+    <div class="eyebrow">Transaction workspace</div>
+    <h1>Sales explorer</h1>
+    <p>Trace individual orders by product, retailer, region, and customer segment.</p>
+  </div>
+  <span class="badge">One row = one order</span>
+</section>
+<app-filters />
+<div class="export-toolbar">
+  <p>
+    Export scope: <strong>{{ state().data?.total ?? 0 | number }} matching orders</strong>, across
+    every page.
+  </p>
+  <button
+    class="button secondary"
+    type="button"
+    [disabled]="exporting() || state().loading || !!state().error || !state().data?.total"
+    (click)="export()"
+  >
+    {{ exporting() ? 'Preparing CSV…' : 'Export matching orders (CSV)' }}
+  </button>
+</div>
+<p class="export-status" role="status">{{ exportMessage() }}</p>
+@if (exportError()) {
+  <p class="error" role="alert">{{ exportError() }}</p>
+}
+<div class="explorer-layout">
+  <section class="panel table-panel">
+    <header>
+      <div>
+        <h2>Transaction ledger</h2>
+        <p>Select an order ID to inspect the sale · Exact amounts in USD</p>
+      </div>
+    </header>
+    <app-data-table
+      caption="Individual sales orders"
+      searchLabel="Search transactions"
+      searchPlaceholder="Order ID or product name…"
+      [rows]="rows()"
+      [columns]="columns"
+      [query]="displayQuery()"
+      [total]="state().data?.total ?? 0"
+      [loading]="state().loading"
+      [error]="state().error"
+      [selectable]="true"
+      [selectedId]="selectedId()"
+      (queryChange)="store.setQuery($event)"
+      (selectRow)="selectedId.set($event)"
+      (retry)="reload()"
+    />
+    @if (state().data && !state().loading && !state().error) {
+      <div class="page-totals">
+        <span>This page only · {{ rows().length }} orders</span
+        ><strong>{{ pageUnits() | number }} units</strong
+        ><strong>{{ pageRevenue() | currency: 'USD' }}</strong>
+      </div>
+    }
+  </section>
+  <aside class="inspector panel" aria-label="Transaction inspector" aria-live="polite">
+    <div class="eyebrow">Order inspection</div>
+    @if (selected(); as sale) {
+      <app-order-details [sale]="sale" />
+    } @else {
+      <div class="inspector-empty">
+        <span aria-hidden="true">≡</span>
+        <h2>Follow a single sale</h2>
+        <p>
+          Select an order ID to see its amount, quantity, retailer, region, and customer segment.
+        </p>
+      </div>
+      <div class="inspector-note">
+        Looking for product growth or contribution?
+        <a routerLink="/products" [queryParams]="store.filterParams()"
+          >Open the product portfolio →</a
+        >
+      </div>
+    }
+  </aside>
+</div>
+<dialog #sheet class="order-sheet" aria-labelledby="order-sheet-title" (close)="closeSheet()">
+  <header>
+    <h2 id="order-sheet-title">Order details</h2>
+    <button
+      class="button secondary"
+      type="button"
+      (click)="sheet.close()"
+      aria-label="Close order details"
+    >
+      Close ×
+    </button>
+  </header>
+  @if (selected(); as sale) {
+    <app-order-details [sale]="sale" />
+  }
+</dialog>

@@ -1,0 +1,138 @@
+<div class="table-search">
+  <label
+    >{{ searchLabel()
+    }}<input
+      type="search"
+      [formControl]="search"
+      [placeholder]="searchPlaceholder()"
+      maxlength="100"
+  /></label>
+  <span>{{ total() }} results</span>
+</div>
+<div
+  class="table-scroll"
+  role="region"
+  [attr.aria-label]="caption() + ' results'"
+  tabindex="0"
+  [attr.aria-busy]="loading()"
+>
+  @if (loading()) {
+    <div class="table-state" role="status">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <p>Loading results…</p>
+    </div>
+  } @else if (error()) {
+    <div class="table-state error" role="alert">
+      <p>{{ error() }}</p>
+      <button class="button" type="button" (click)="retry.emit()">Try again</button>
+    </div>
+  } @else {
+    <table>
+      <caption class="sr-only">
+        {{
+          caption()
+        }}
+      </caption>
+      <thead>
+        <tr>
+          @if (compareEnabled()) {
+            <th scope="col"><span class="sr-only">Compare products</span></th>
+          }
+          @for (column of columns(); track column.key) {
+            <th
+              scope="col"
+              [attr.aria-sort]="
+                column.format === 'trend'
+                  ? null
+                  : query().sort === column.key
+                    ? query().direction === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+              "
+            >
+              @if (column.format === 'trend') {
+                <span class="column-label">{{ column.label }}</span>
+              } @else {
+                <button type="button" (click)="sort(column.key)">
+                  {{ column.label }}
+                  <span aria-hidden="true">{{
+                    query().sort === column.key ? (query().direction === 'asc' ? '↑' : '↓') : '↕'
+                  }}</span>
+                </button>
+              }
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr [class.selected]="row.id === selectedId() || comparedIds().includes(row.id)">
+            @if (compareEnabled()) {
+              <td class="checkbox-cell">
+                <input
+                  type="checkbox"
+                  [attr.aria-label]="'Compare ' + row['name']"
+                  [checked]="comparedIds().includes(row.id)"
+                  [disabled]="comparedIds().length >= 3 && !comparedIds().includes(row.id)"
+                  (change)="compareToggle.emit(row.id)"
+                />
+              </td>
+            }
+            @for (column of columns(); track column.key; let first = $first) {
+              <td [class.numeric]="!!column.format">
+                @if (column.format === 'trend') {
+                  <app-sparkline [points]="points(row, column)" />
+                } @else if (first && selectable()) {
+                  <button class="product-link" type="button" (click)="selectRow.emit(row.id)">
+                    {{ cell(row, column) }} <span aria-hidden="true">↗</span>
+                  </button>
+                } @else if (column.format === 'growth') {
+                  <span class="change" [class]="direction(row[column.key])"
+                    ><span class="sr-only">{{ changeLabel(row[column.key]) }}: </span
+                    ><span aria-hidden="true">{{
+                      direction(row[column.key]) === 'negative'
+                        ? '↓ '
+                        : direction(row[column.key]) === 'positive'
+                          ? '↑ '
+                          : ''
+                    }}</span
+                    >{{ cell(row, column) }}</span
+                  >
+                } @else {
+                  {{ cell(row, column) }}
+                }
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty" [attr.colspan]="columns().length + (compareEnabled() ? 1 : 0)">
+              @if (query().search) {
+                <h3>No search matches</h3>
+                <p>No matching records for “{{ query().search }}”.</p>
+                <button class="button secondary" type="button" (click)="clearSearch()">
+                  Clear search
+                </button>
+              } @else {
+                <h3>No records for this selection</h3>
+                <p>Widen the date range or remove an active filter.</p>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+<div class="pagination">
+  <span>Page {{ query().page }} of {{ pages() }}</span>
+  <div>
+    <button type="button" (click)="page(-1)" [disabled]="query().page <= 1 || loading()">
+      ← Previous</button
+    ><button type="button" (click)="page(1)" [disabled]="query().page >= pages() || loading()">
+      Next →
+    </button>
+  </div>
+</div>

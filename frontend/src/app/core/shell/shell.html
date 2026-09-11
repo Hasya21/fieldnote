@@ -1,0 +1,79 @@
+<a class="skip-link" href="#main-content">Skip to content</a>
+<aside class="sidebar" [class.open]="menuOpen()" id="main-navigation">
+  <a
+    routerLink="/dashboard"
+    [queryParams]="store.filterParams()"
+    class="brand"
+    (click)="closeMenu()"
+    ><span class="brand-symbol" aria-hidden="true">f.</span>fieldnote<span class="brand-dot"
+      >®</span
+    ></a
+  >
+  <div class="workspace">
+    <span class="workspace-icon">F</span>
+    <div>Consumer insights<small>Demo workspace</small></div>
+    <span aria-hidden="true">⌄</span>
+  </div>
+  <div class="nav-label">WORKSPACE</div>
+  <nav aria-label="Main navigation">
+    <a
+      routerLink="/dashboard"
+      [queryParams]="store.filterParams()"
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      (click)="closeMenu()"
+      ><span aria-hidden="true">▦</span>Overview</a
+    >
+    <a
+      routerLink="/products"
+      [queryParams]="store.filterParams()"
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      (click)="closeMenu()"
+      ><span aria-hidden="true">▧</span>Products</a
+    >
+    <a
+      routerLink="/analytics"
+      [queryParams]="store.filterParams()"
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      (click)="closeMenu()"
+      ><span aria-hidden="true">≋</span>Sales explorer</a
+    >
+  </nav>
+  <div class="sidebar-note">
+    <strong>23,392 sales<br />16 products</strong>
+    <p>January 2024 – December 2025</p>
+    <span class="demo-tag">Fictional data · USD</span>
+  </div>
+  <div class="sidebar-bottom">
+    <span class="avatar">DA</span>
+    <div>{{ auth.user()?.name }}<small>Portfolio workspace</small></div>
+    <button type="button" (click)="logout()" aria-label="Sign out" title="Sign out">↪</button>
+  </div>
+</aside>
+<div class="workspace-main">
+  <header class="topbar">
+    <div>
+      <button
+        class="mobile-menu"
+        type="button"
+        (click)="menuOpen.set(!menuOpen())"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="main-navigation"
+        aria-label="Toggle navigation"
+      >
+        ☰</button
+      ><span class="breadcrumb">Workspace <span>/</span> <strong>Consumer insights</strong></span>
+    </div>
+    <div class="topbar-right">
+      <span class="sample-status"><i></i>Sample dataset</span><span class="topbar-divider"></span
+      ><span class="avatar small" aria-label="Demo analyst">DA</span>
+    </div>
+  </header>
+  <main id="main-content" tabindex="-1"><router-outlet /></main>
+  <footer>
+    Fieldnote <span>Independent consumer analytics portfolio · No affiliation with NIQ</span
+    ><span>Built for a clearer perspective.</span>
+  </footer>
+</div>

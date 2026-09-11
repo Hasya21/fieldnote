@@ -1,0 +1,113 @@
+.preset-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.preset-bar > span {
+  font-weight: 600;
+  margin-right: 6px;
+}
+.preset-bar button {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 8px 12px;
+  color: var(--muted);
+  font-size: 12px;
+  min-height: 36px;
+}
+.preset-bar button[aria-pressed='true'] {
+  background: #e2eee5;
+  color: #235c43;
+  border-color: #a4c4af;
+}
+.filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(145px, 1fr)) repeat(4, minmax(110px, 1fr));
+  gap: 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+input,
+select {
+  width: 100%;
+  min-width: 0;
+  font-size: 13px;
+  padding: 10px 8px;
+  min-height: 42px;
+}
+.filter-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0 20px;
+}
+.filter-footer p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.filter-footer button {
+  background: none;
+  border: 0;
+  color: var(--accent);
+  white-space: nowrap;
+  padding: 8px 0;
+  font-size: 12px;
+}
+.filter-footer .invalid {
+  color: #a33132;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -6px 0 20px;
+  font-size: 12px;
+}
+.chips > span {
+  color: var(--muted);
+  margin-right: 4px;
+}
+.chips button {
+  border: 1px solid #c2d7ca;
+  background: #edf5ee;
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: #245c44;
+}
+.chips button span {
+  margin-left: 8px;
+  font-size: 16px;
+}
+@media (max-width: 1250px) {
+  .filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .filter-footer {
+    align-items: start;
+  }
+  .preset-bar button {
+    font-size: 12px;
+  }
+}

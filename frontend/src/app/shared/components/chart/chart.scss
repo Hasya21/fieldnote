@@ -1,0 +1,41 @@
+.chart {
+  height: 270px;
+  position: relative;
+}
+details {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+li {
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+small {
+  display: block;
+  font-size: 12px;
+  margin-top: 6px;
+}
+button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  padding: 6px 0;
+  text-align: left;
+  font-weight: 600;
+}

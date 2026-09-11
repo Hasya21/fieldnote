@@ -1,0 +1,185 @@
+<section class="page-heading">
+  <div>
+    <div class="eyebrow">Consumer insights</div>
+    <h1>Performance overview</h1>
+    <p>Compare results, identify the largest movements, and investigate the underlying sales.</p>
+  </div>
+  <button class="button secondary" type="button" (click)="reload()">↻ Refresh data</button>
+</section>
+<app-filters />
+@if (state().loading) {
+  <div class="loading-grid" role="status" aria-label="Loading dashboard">
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <p>Preparing your insights…</p>
+  </div>
+} @else if (state().error) {
+  <div class="error panel" role="alert">
+    <h2>We couldn’t load your dashboard</h2>
+    <p>{{ state().error }}</p>
+    <button class="button" type="button" (click)="reload()">Try again</button>
+  </div>
+} @else if (state().data; as data) {
+  <div class="kpi-grid">
+    <app-kpi
+      label="Total revenue"
+      [value]="data.revenue"
+      [previous]="data.previous?.revenue ?? null"
+      format="currency"
+      note="USD · Selected period"
+    />
+    <app-kpi
+      label="Units sold"
+      [value]="data.unitsSold"
+      [previous]="data.previous?.unitsSold ?? null"
+      note="Selected sales quantity"
+    />
+    <app-kpi
+      label="Average order value"
+      [value]="data.averageOrderValue"
+      [previous]="data.previous?.averageOrderValue ?? null"
+      format="money"
+      note="Revenue / distinct orders"
+    />
+    <app-kpi
+      label="Category share"
+      [value]="data.categoryShare"
+      [previous]="data.previous?.categoryShare ?? null"
+      format="percent"
+      note="Contribution to the filtered dataset"
+    />
+    <app-kpi
+      label="Revenue growth"
+      [value]="data.growth"
+      format="growth"
+      [note]="
+        data.growth === null
+          ? 'No comparable revenue baseline'
+          : data.growth < 0
+            ? '↓ Revenue declined versus prior period'
+            : data.growth > 0
+              ? '↑ Revenue increased versus prior period'
+              : '— Revenue unchanged'
+      "
+    />
+  </div>
+  @if (data.comparisonReason) {
+    <p class="notice" role="status">{{ data.comparisonReason }}</p>
+  }
+  @if (!data.records) {
+    <section class="panel empty-state">
+      <h2>No sales in this selection</h2>
+      <p>Widen the date range or remove an active filter.</p>
+    </section>
+  } @else {
+    @if (data.insights.length) {
+      <section aria-label="Revenue drivers" class="insight-grid">
+        @for (insight of data.insights; track insight.dimension) {
+          <article class="driver">
+            <span class="eyebrow">Largest {{ insight.dimension }} movement</span>
+            <h2>
+              {{ insight.label }}
+              <span [class.negative]="insight.delta < 0" [class.positive]="insight.delta > 0"
+                >{{ insight.delta < 0 ? '↓' : '↑' }} {{ insight.delta | metric: 'currency' }}</span
+              >
+            </h2>
+            <p>
+              Revenue moved from {{ insight.previous | metric: 'currency' }} to
+              {{ insight.current | metric: 'currency' }}.
+              {{
+                insight.delta < 0
+                  ? 'Largest absolute decline or gain in
+      this dimension.'
+                  : 'Largest absolute movement in this dimension.'
+              }}
+            </p>
+            <button type="button" (click)="store.drill(insight.dimension, insight.label)">
+              Investigate {{ insight.label }} →
+            </button>
+          </article>
+        }
+      </section>
+    }
+    <div class="chart-grid">
+      <article class="panel trend-panel">
+        <header>
+          <div>
+            <h2>Revenue versus previous period</h2>
+            <p>Monthly revenue · Prior days aligned to the selected dates</p>
+          </div>
+        </header>
+        <app-chart
+          title="Revenue comparison"
+          type="line"
+          [points]="data.trend"
+          [comparisons]="comparison()"
+        />
+      </article>
+      <article class="panel">
+        <header>
+          <div>
+            <h2>Sales by category</h2>
+            <p>Select a category to inspect its sales</p>
+          </div>
+        </header>
+        <app-chart
+          title="Sales by category"
+          type="doughnut"
+          [points]="data.categories"
+          [drillable]="true"
+          (pointSelect)="store.drill('category', $event.label)"
+        />
+      </article>
+      <article class="panel">
+        <header>
+          <div>
+            <h2>Regional performance</h2>
+            <p>Select a region to investigate</p>
+          </div>
+        </header>
+        <app-chart
+          title="Regional revenue"
+          [points]="data.regions"
+          [drillable]="true"
+          (pointSelect)="store.drill('region', $event.label)"
+        />
+      </article>
+      <article class="panel">
+        <header>
+          <div>
+            <h2>Top products</h2>
+            <p>Select a product to trace its sales</p>
+          </div>
+        </header>
+        <app-chart
+          title="Top products by revenue"
+          [horizontal]="true"
+          [points]="data.topProducts"
+          [drillable]="true"
+          (pointSelect)="product($event)"
+        />
+      </article>
+      <article class="panel">
+        <header>
+          <div>
+            <h2>Customer segments</h2>
+            <p>Select a segment to explore its purchases</p>
+          </div>
+        </header>
+        <app-chart
+          title="Customer segment revenue"
+          type="doughnut"
+          [points]="data.segments"
+          [drillable]="true"
+          (pointSelect)="store.drill('customerSegment', $event.label)"
+        />
+      </article>
+    </div>
+  }
+  <p class="footnote">
+    Compared with {{ data.previousPeriod.startDate }}–{{ data.previousPeriod.endDate }}, an
+    equal-length interval. Dashed trend aligns prior days to current dates, including partial
+    months. Insights describe observed differences in fictional data, not causes.
+  </p>
+}

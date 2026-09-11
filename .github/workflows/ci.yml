@@ -1,0 +1,45 @@
+name: Quality and build
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Lint frontend
+        run: npm run lint:frontend
+      - name: Lint backend
+        run: npm run lint:backend
+      - name: Test frontend (Jest)
+        run: npm run test -w frontend
+      - name: Build Angular production bundle
+        run: npm run build -w frontend
+      - name: Test backend
+        run: npm run test -w backend
+      - name: Build backend
+        run: npm run build -w backend
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Browser integration tests
+        run: npm run test:e2e
+      - name: Upload production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: fieldnote-production
+          path: |
+            frontend/dist/insights/browser
+            backend/dist
+          retention-days: 7

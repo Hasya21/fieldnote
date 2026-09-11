@@ -1,0 +1,38 @@
+{
+  "name": "consumer-insights",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "^24.15.0"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n API,WEB -c yellow,cyan \"npm run dev -w backend\" \"npm start -w frontend\"",
+    "lint": "eslint . --max-warnings=0",
+    "lint:frontend": "eslint frontend --max-warnings=0",
+    "lint:backend": "eslint backend --max-warnings=0",
+    "test": "npm run test -w frontend && npm run test -w backend",
+    "build": "npm run build -w frontend && npm run build -w backend && node scripts/build-hosting.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "node scripts/check.mjs",
+    "check:backend": "node scripts/check.mjs backend",
+    "setup": "node scripts/setup.mjs",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "angular-eslint": "^22.0.0",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.10.0",
+    "prettier": "^3.6.2",
+    "typescript": "~6.0.0",
+    "typescript-eslint": "^8.57.0"
+  }
+}

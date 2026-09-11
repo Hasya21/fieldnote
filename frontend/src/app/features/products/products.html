@@ -1,0 +1,120 @@
+<section class="page-heading">
+  <div>
+    <div class="eyebrow">Portfolio analysis</div>
+    <h1>Product performance</h1>
+    <p>Compare revenue, growth, contribution, and monthly trends across your assortment.</p>
+  </div>
+  <span class="badge">16 fictional products</span>
+</section>
+<app-filters />
+<div class="product-toolbar">
+  <div class="views" role="group" aria-label="Product views">
+    <button
+      type="button"
+      [attr.aria-pressed]="query().view === 'revenue'"
+      (click)="setView('revenue')"
+    >
+      Revenue leaders</button
+    ><button
+      type="button"
+      [attr.aria-pressed]="query().view === 'growth'"
+      (click)="setView('growth')"
+    >
+      Fastest growers</button
+    ><button
+      type="button"
+      [attr.aria-pressed]="query().view === 'declining'"
+      (click)="setView('declining')"
+    >
+      Declining products
+    </button>
+  </div>
+  <span>Select 2–3 products to compare</span>
+</div>
+<section class="panel table-panel">
+  <header>
+    <div>
+      <h2>Product portfolio</h2>
+      <p>One row per product · Growth versus the previous equal-length period</p>
+    </div>
+  </header>
+  <app-data-table
+    caption="Product performance"
+    [rows]="rows()"
+    [columns]="columns"
+    [query]="displayQuery()"
+    [total]="state().data?.total ?? 0"
+    [loading]="state().loading"
+    [error]="state().error"
+    [selectable]="true"
+    [compareEnabled]="true"
+    [comparedIds]="comparedIds()"
+    (compareToggle)="toggle($event)"
+    (queryChange)="store.setQuery($event)"
+    (selectRow)="open($event)"
+    (retry)="reload()"
+  />
+</section>
+@if (comparedIds().length) {
+  <section class="panel comparison" aria-label="Product comparison">
+    <header>
+      <div>
+        <h2>Product comparison</h2>
+        <p>
+          {{ comparedIds().length }} of 3 selected · Date, region, retailer and segment filters
+          apply across all categories.
+        </p>
+      </div>
+      <button class="button secondary" type="button" (click)="store.compare([])">
+        Clear comparison
+      </button>
+    </header>
+    @if (comparedIds().length < 2) {
+      <p role="status">Select one more product to compare its performance.</p>
+    } @else if (comparison().loading) {
+      <p role="status">Loading comparison…</p>
+    } @else if (comparison().error) {
+      <p class="error" role="alert">{{ comparison().error }}</p>
+      <button class="button" type="button" (click)="reload()">Retry comparison</button>
+    } @else if (comparison().data; as products) {
+      <div class="comparison-cards">
+        @for (product of products; track product.id) {
+          <article>
+            <div class="eyebrow">{{ product.category }}</div>
+            <h3>{{ product.name }}</h3>
+            <dl>
+              <dt>Revenue</dt>
+              <dd>{{ product.revenue | metric: 'currency' }}</dd>
+              <dt>Prior revenue</dt>
+              <dd>{{ product.previousRevenue | metric: 'currency' }}</dd>
+              <dt>Growth</dt>
+              <dd [class.negative]="product.growth !== null && product.growth < 0">
+                {{ product.growth | metric: 'growth' }}
+              </dd>
+              <dt>Units</dt>
+              <dd>{{ product.unitsSold | metric }}</dd>
+              <dt>Contribution</dt>
+              <dd>{{ product.share | metric: 'percent' }}</dd>
+            </dl>
+            <button
+              type="button"
+              (click)="toggle(product.id)"
+              [attr.aria-label]="'Remove ' + product.name + ' from comparison'"
+            >
+              Remove
+            </button>
+          </article>
+        }
+      </div>
+      @if (products.at(0); as first) {
+        <app-chart
+          title="Compared product revenue trends"
+          type="line"
+          [points]="first.trend"
+          [seriesLabel]="first.name"
+          [comparisons]="additionalSeries()"
+        />
+      }
+    }
+  </section>
+}

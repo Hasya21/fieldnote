@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+article {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  height: 100%;
+  box-sizing: border-box;
+}
+p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+strong {
+  display: block;
+  font-size: clamp(25px, 2.3vw, 34px);
+  letter-spacing: -1px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.prior {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.change {
+  display: inline-block;
+  font-size: 12px;
+  padding: 5px 7px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+.positive {
+  color: #116548;
+  background: #e7f3ea;
+}
+.negative {
+  color: #a33132;
+  background: #faecea;
+}
+.neutral {
+  color: #59665f;
+  background: #edf0ed;
+}
+small {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}

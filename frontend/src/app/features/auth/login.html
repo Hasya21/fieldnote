@@ -1,0 +1,77 @@
+<main class="login-layout">
+  <section class="intro">
+    <div class="wordmark"><span>f.</span>fieldnote</div>
+    <div>
+      <span class="eyebrow">Consumer intelligence, thoughtfully explored</span>
+      <h1>Find the story<br />behind the sale.</h1>
+      <p>
+        A focused workspace for understanding products, markets, and the people who choose them.
+      </p>
+      <div class="abstract-chart" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+    <small>Independent portfolio project · Fictional retail data</small>
+  </section>
+  <section class="login-side">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <span class="eyebrow">Welcome to your workspace</span>
+      <h2>Let’s take a closer look.</h2>
+      <p>Explore two years of fictional retail sales.</p>
+      @if (demoAccess()) {
+        <button class="button guest-button" type="button" (click)="guest()" [disabled]="loading()">
+          Explore the demo →
+        </button>
+        <p class="login-note">Read-only guest access. No account needed.</p>
+      }
+      @if (expired) {
+        <p class="notice" role="status">Your session expired. Sign in to continue.</p>
+      }
+      @if (passwordLogin()) {
+        <label for="email">Email address</label
+        ><input
+          id="email"
+          type="email"
+          formControlName="email"
+          autocomplete="username"
+          placeholder="Your analyst email"
+          [attr.aria-invalid]="form.controls.email.touched && form.controls.email.invalid"
+          aria-describedby="email-error"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small id="email-error" class="field-error">Enter a valid email address.</small>
+        }
+        <label for="password">Password</label
+        ><input
+          id="password"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          placeholder="Enter your password"
+          [attr.aria-invalid]="form.controls.password.touched && form.controls.password.invalid"
+          aria-describedby="password-error"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small id="password-error" class="field-error"
+            >Enter your password (up to 256 characters).</small
+          >
+        }
+      }
+      @if (error()) {
+        <p class="error" role="alert">{{ error() }}</p>
+      }
+      @if (passwordLogin()) {
+        <button class="button" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Signing in…' : 'Open workspace' }} <span aria-hidden="true">→</span>
+        </button>
+        <p class="login-note">
+          Use the local analyst credentials configured for this installation.
+        </p>
+      }
+      <div class="privacy-note">
+        <span aria-hidden="true">◇</span>Your session stays in memory and ends when this page is
+        reloaded.
+      </div>
+    </form>
+  </section>
+</main>

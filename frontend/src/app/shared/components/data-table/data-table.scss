@@ -1,0 +1,143 @@
+.table-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  padding: 20px;
+  gap: 16px;
+}
+.table-search label {
+  font-size: 13px;
+  display: grid;
+  gap: 8px;
+  width: min(330px, 100%);
+}
+.table-search span {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.table-scroll {
+  overflow: auto;
+  max-height: 560px;
+  min-height: 220px;
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+}
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #eef2ee;
+  border-block: 1px solid var(--border);
+}
+th button,
+.column-label {
+  background: none;
+  border: 0;
+  padding: 14px 16px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  display: block;
+  text-align: left;
+  white-space: nowrap;
+}
+th button {
+  width: 100%;
+  min-height: 44px;
+}
+th span {
+  margin-left: 4px;
+}
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e8ede8;
+  font-size: 13px;
+}
+tbody tr:hover {
+  background: #f7faf6;
+}
+tbody tr.selected {
+  background: #e8f3ed;
+}
+tbody tr.selected td:first-child {
+  box-shadow: inset 3px 0 var(--accent);
+}
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+.product-link {
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: left;
+}
+.product-link span {
+  color: var(--accent);
+  margin-left: 8px;
+}
+.change {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 5px;
+}
+.positive {
+  color: #116548;
+  background: #e7f3ea;
+}
+.negative {
+  color: #a33132;
+  background: #faecea;
+}
+.neutral {
+  color: #59665f;
+  background: #edf0ed;
+}
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.pagination button {
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 6px;
+  min-height: 40px;
+  padding: 8px 12px;
+  margin-left: 8px;
+  font-size: 12px;
+}
+.empty,
+.table-state {
+  text-align: center;
+  padding: 40px 22px;
+  color: var(--muted);
+  white-space: normal;
+}
+.empty h3 {
+  font-size: 16px;
+  color: var(--ink);
+}
+.skeleton {
+  height: 26px;
+  margin-bottom: 12px;
+}
+.checkbox-cell {
+  padding: 12px;
+}
+input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
