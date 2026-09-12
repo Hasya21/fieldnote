@@ -1,6 +1,6 @@
 import express, { type ErrorRequestHandler } from 'express';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import { rateLimit } from 'express-rate-limit';
 import type { AuthConfig } from './config.js';
 import { authRouter, requireAuth } from './auth.js';
 import { queryApi } from './query-api.js';
